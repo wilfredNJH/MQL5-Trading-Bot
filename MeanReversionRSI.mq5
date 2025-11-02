@@ -9,7 +9,7 @@ INPUTS
 ******/
 input string Risk_Management_Settings = "***RISK MANAGEMENT SETTINGS***";
 //closure on opposite signal of indicator
-input bool Closure_on_Opposite_Signal = false;
+input bool Closure_on_Opposite_Signal = true;
 static bool Previous_Trade_is_a_Buy = false; 
 static bool Previous_Trade_is_a_Sell = false;
 //risk percentage 
@@ -167,7 +167,7 @@ void OnTick()
    if(AccureDynasty_Is_Enabled == true){
       //If Candle Updated 
       if(TimeStamp != Time){
-         TimeStamp = Time; //set the time 
+        TimeStamp = Time; //set the time 
          
          //Ask & Bid Price
          double AskPrice = NormalizeDouble(SymbolInfoDouble(_Symbol,SYMBOL_ASK),_Digits);
@@ -193,7 +193,7 @@ void OnTick()
      }//end if for the TimeStamp
    }//end if algo enable 
   //Manage Trade 
-  //TradeManagement();
+  // TradeManagement();
   
   //Comments
   Comment("Trade Signal : ",TradeSignal,
@@ -837,14 +837,18 @@ void Strategy_MeanReversionRSI(){
    double RSIValue200 = RSIArray200[0]; //RSI 200 Value
    double RSIValue250 = RSIArray250[0]; //RSI 250 Value
    //if RSIValue14 is higher than 70 and RSIValue3 is higher than 80
-   if(RSIValue14 > 70 && RSIValue3 > 80){
+   if(RSIValue14 > 85 && RSIValue3 > 95 && RSIValue200 < 47){
       TradeSignal = "SELL";
-   }else if(RSIValue14 > 85 && RSIValue3 > 95 && RSIValue200 < 47){
+      Previous_Trade_is_a_Sell = true; 
+   }else if (RSIValue14 > 70 && RSIValue3 > 80){
       TradeSignal = "SELL";
-   }else if(RSIValue14 < 30 && RSIValue3 < 20){
+      Previous_Trade_is_a_Sell = true;
+   }else if (RSIValue14 < 30 && RSIValue3 < 20){
       TradeSignal = "BUY";
+      Previous_Trade_is_a_Buy = true;
    }else if(RSIValue14 < 30 && RSIValue3 < 20 && RSIValue200 > 53){
       TradeSignal = "BUY";
+      Previous_Trade_is_a_Buy = true;
    }
 }
 
